@@ -2,7 +2,8 @@ globals[
   ;jayneel
 no-row
 no-column
-
+circle-drawn
+  radius
 ]
 to setup
  ;jayneel
@@ -14,20 +15,48 @@ to setup
   print(no-column)
   print(no-row)
   ;calculate radius of each circle
-  let radius 20 / no-row
+  set radius 20 / no-row
   print("Radius")
   print(radius)
-  draw-countries radius
+  draw-countries
+  creat-turtles
 end
 
-to draw-countries [radius]
+to creat-turtles
+  ;jayneel
+  let x 0
+  let y 0
+  let i 1
+  let j 1
+  while [ i <= no-row ]
+  [
+    while [ j <= no-column ]
+    [
+      set x x + 2 * radius
+
+      ; create random number of turtles.
+      let num random 30
+      let colorr random 100
+      create-turtles num [ setxy 20 - x 20 - y ]
+      ask turtles[ set color colorr ]
+      set j j + 1
+      if ( ( i - 1 ) * no-row ) + j > countries [ set j no-column + 1  set i no-row + 1  ] ;stopping condition
+    ]
+    set y y + 2 * radius
+    set j 1
+    set i i + 1
+
+  ]
+end
+to draw-countries
  ;jayneel
   ;fill in row major form
   let x 0
   let y 0 ; iterator for rows
   let i 1
   let j 1
-  create-turtles 1 [setxy 20 - x 20 - y]
+  create-turtles 1 [setxy 20 - x 20 - y set size 50]
+
 
   while [i <= no-row  ]
   [ ;print(i)
@@ -39,8 +68,10 @@ to draw-countries [radius]
 
       ;make it dance here!
       ask turtles [ setxy 20 - x 20 - y ]
-      draw-circle 20 - x 20 - y radius
-      print("drawn")
+          draw-circle 20 - x 20 - y radius
+         print("drawn")
+         set circle-drawn circle-drawn + 1
+         ask turtles [ set plabel circle-drawn ]
       set j j + 1
        ;stopping condition
       if ( ( i - 1 ) * no-row ) + j > countries [ set j no-column + 1  set i no-row + 1  ]
@@ -56,21 +87,44 @@ end
 
 
 to draw-circle [cx cy r]
+
+  ;jayneel
   let p2r ( 2 * pi * r )  ;; get circumference of the circle
   let step p2r / 360      ;; make step lengths 1/360th of the circumference
 
   crt 1 [                 ;; create a single drawing turtle
     setxy cx + r cy       ;; move it to the highlight patch + the radius
     pd                    ;; put the pen down
+
     set heading 0         ;; make it face along the tangent
     while [ p2r > 0 ] [   ;; make the turtle continue to move until the circle is drawn
       lt 1
-      fd step
+      fd step   set pcolor green
+
       set p2r p2r - step
     ]
     die                   ;; remove the turtle
   ]
 
+end
+
+to go
+  ask turtles [
+  fd 1
+  ifelse pcolor = green
+  [set heading heading - 180 ]
+    [
+      set heading random 360]
+  ]
+end
+
+
+;initiate infection
+to start-infection
+  ;source
+  let x source mod no-column
+  let y ceiling source / no-column
+  create-turtles 1 [ setxy x y set color red]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -94,8 +148,8 @@ GRAPHICS-WINDOW
 20
 -20
 20
-1
-1
+0
+0
 1
 ticks
 30.0
@@ -126,7 +180,7 @@ countries
 countries
 0
 10
-8.0
+10.0
 1
 1
 NIL
@@ -169,6 +223,72 @@ false
 PENS
 "default" 1.0 0 -16777216 true "" "plot x"
 "pen-1" 1.0 0 -7500403 true "" "plot y"
+
+BUTTON
+142
+10
+205
+43
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+216
+41
+298
+74
+NIL
+clear-all
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+0
+90
+172
+123
+source
+source
+0
+countries
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+172
+89
+293
+122
+NIL
+start-infection
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
