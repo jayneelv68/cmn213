@@ -5,6 +5,10 @@ no-column
 circle-drawn
   radius
 ]
+turtles-own [
+  ;Shambhavi
+  membership
+]
 to setup
  ;jayneel
   ;create 5 country bounding boxes.
@@ -68,10 +72,12 @@ to draw-countries
 
       ;make it dance here!
       ask turtles [ setxy 20 - x 20 - y ]
-          draw-circle 20 - x 20 - y radius
+         draw-circle 20 - x 20 - y radius
          print("drawn")
          set circle-drawn circle-drawn + 1
-         ask turtles [ set plabel circle-drawn ]
+         ask turtles [ set plabel circle-drawn
+                       set membership circle-drawn ;Shambhavi
+                     ]
       set j j + 1
        ;stopping condition
       if ( ( i - 1 ) * no-row ) + j > countries [ set j no-column + 1  set i no-row + 1  ]
@@ -85,6 +91,18 @@ to draw-countries
   ask turtles [die]
 end
 
+to fly-to-country [m]
+   ;Shambhavi : turtle transport
+   let move random countries
+   print("inside countires")
+   if ( move = m ) ; If the
+      [ print (" in the same country") ]
+   ifelse ( move = m - 1 or move = m + 1 )
+        [ print ("in the adjacent country") ]
+    [
+          print("in the far-off country")
+    ]
+end
 
 to draw-circle [cx cy r]
 
@@ -115,7 +133,9 @@ to go
   [set heading heading - 180 ]
     [
       set heading random 360]
+  fly-to-country membership ;Shambhavi
   ]
+
 end
 
 
