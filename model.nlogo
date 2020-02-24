@@ -2,12 +2,14 @@ globals[
   ;jayneel
 no-row
 no-column
-circle-drawn
+  circle-drawn
   radius
 ]
 turtles-own [
   ;Shambhavi
-  membership
+  circle-number
+  xcoordinate
+  ycoordinate
 ]
 to setup
  ;jayneel
@@ -32,6 +34,7 @@ to creat-turtles
   let y 0
   let i 1
   let j 1
+
   while [ i <= no-row ]
   [
     while [ j <= no-column ]
@@ -42,7 +45,8 @@ to creat-turtles
       let num random 30
       let colorr random 100
       create-turtles num [ setxy 20 - x 20 - y ]
-      ask turtles[ set color colorr ]
+      ask turtles[ set color colorr
+                  ]
       set j j + 1
       if ( ( i - 1 ) * no-row ) + j > countries [ set j no-column + 1  set i no-row + 1  ] ;stopping condition
     ]
@@ -71,12 +75,12 @@ to draw-countries
       set x x + 2 * radius
 
       ;make it dance here!
-      ask turtles [ setxy 20 - x 20 - y ]
+      ask turtles [ setxy 20 - x 20 - y]
          draw-circle 20 - x 20 - y radius
          print("drawn")
          set circle-drawn circle-drawn + 1
          ask turtles [ set plabel circle-drawn
-                       set membership circle-drawn ;Shambhavi
+                       set circle-number circle-drawn
                      ]
       set j j + 1
        ;stopping condition
@@ -91,17 +95,26 @@ to draw-countries
   ask turtles [die]
 end
 
-to fly-to-country [m]
+to fly-to-country [aturtle]
    ;Shambhavi : turtle transport
    let move random countries
-   print("inside countires")
-   if ( move = m ) ; If the
-      [ print (" in the same country") ]
-   ifelse ( move = m - 1 or move = m + 1 )
-        [ print ("in the adjacent country") ]
-    [
-          print("in the far-off country")
-    ]
+
+  let row-num (move mod no-row) + 1
+  let col-num (move mod no-row) + 1
+
+   ;print("inside countires")
+   ;if ( move = m ) ; If the
+   ;   [ print (" in the same country") ]
+   ;ifelse ( move = m - 1 or move = m + 1 )
+   ;     [ print ("in the adjacent country") ]
+   ; [
+   ;       print("in the far-off country")
+   ; ]
+   ask aturtle
+  [setxy 20 - (row-num * radius) 20 - (row-num * 2 * radius)
+  ]
+  print( " moved to another country " )
+
 end
 
 to draw-circle [cx cy r]
@@ -128,14 +141,28 @@ end
 
 to go
   ask turtles [
+  ;Shambhavi
+  set xcoordinate xcor
+  ;print(xcor)
+  ;print(ycor)
+  set ycoordinate ycor
+  ;set membership plabel
+  set circle-number (circle-number mod no-row) + 1 ; Getting the row of the circle ( country)
+  print(circle-number)
+  if( (xcoordinate = 20 - (circle-number * radius)) and (ycoordinate = 20 - ( circle-number * 2 * radius ) ) )
+  [
+      fly-to-country who
+  ]
   fd 1
+  ; get the coordinates of the turtle.
+  ; Check if the coordinates are the center
+  ; if yes, then move it to any random country.
+
   ifelse pcolor = green
   [set heading heading - 180 ]
     [
       set heading random 360]
-  fly-to-country membership ;Shambhavi
   ]
-
 end
 
 
